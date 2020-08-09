@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, Fragment} from 'react';
 
 import Navigation from './components/Navigation/Navigation';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 
 import './App.css';
 import Particles from 'react-particles-js';
@@ -34,6 +36,8 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [boundingBox, setBoundingBox] = useState([]);
   const [loading, setLoading]  = useState(false); 
+  const [route, setRoute] = useState('signin');
+
 
   const onChangeHandler = (event) => {
     setInput(event.target.value);
@@ -50,7 +54,6 @@ function App() {
     // Predict the contents of an image by passing in a URL.
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
       .then(response => {
-        console.log(response.outputs[0].data.regions);
         setBoundingBox(response.outputs[0].data.regions);
         setLoading(false);
       })
@@ -60,13 +63,25 @@ function App() {
       });
   }
 
+  const onRouteChange = (route) => {
+    setRoute(route)
+  }
+
+  const MainContent = (
+      <Fragment>
+        <Rank />
+        <ImageLinkForm onInputChagne={(e) => onChangeHandler(e)} input={input} onSubmit={onButtonSubmit} />
+        {imageUrl.length > 1 && loading === false   ?  <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null}
+      </Fragment>
+  );
+
   return (
     <div className="App">
       <Particles className="particles" params={particlesOptions} />
-      <Navigation />
-      <Rank />
-      <ImageLinkForm onInputChagne={(e) => onChangeHandler(e)} input={input} onSubmit={onButtonSubmit} />
-      {imageUrl.length && loading === false > 1 ?  <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null}
+      <Navigation onRouteChange={onRouteChange} route={route} />
+      { route === 'home' ? MainContent : null}
+      { route === 'signin' ? <SignIn onRouteChange={onRouteChange} /> : null }
+      { route === 'register' ? <Register onRouteChange={onRouteChange} /> : null }
     </div>
   );
 }

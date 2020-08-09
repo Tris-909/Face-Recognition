@@ -8,19 +8,26 @@ const ImageContainer = styled.div`
     margin-top: 20px;
     margin-bottom: 30px;
     position: relative;
+
+    @media screen and (max-width: 500px) {
+        width: 90%;
+    }
 `;
 
-const BorderBoxAroundFacesContainer = styled.div`
+const Image = styled.img`
     width: 759.6px;
     height: 500px;
-    position: relative;
-    margin: auto;
-    box-sizing: border-box;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    @media screen and (max-width: 500px) {
+        height: 350px;
+    }
 `;
 
 export default function FaceRecognition(props) {
-    
-    let boxAroundFaces = props.boundingBox.map(singleItem => {
+    let boxAroundFaces = props.boundingBox !== undefined ? props.boundingBox.map(singleItem => {
         const top = singleItem.region_info.bounding_box.top_row*100;
         const bottom = singleItem.region_info.bounding_box.bottom_row*100;
         const left = singleItem.region_info.bounding_box.left_col*100;
@@ -38,7 +45,7 @@ export default function FaceRecognition(props) {
             width={ left > right ? (left-right) : (right-left) }
             />
         );
-    });
+    }) : null;
 
     return (
         <ImageContainer className="center">
@@ -46,14 +53,7 @@ export default function FaceRecognition(props) {
                 position: 'absolute'
             }} className="mt2">
                {boxAroundFaces}
-            <img
-            style={{
-                width: '759.6px',
-                height: '500px',
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover"
-            }} 
+            <Image
             src={`${props.imageUrl}`}
             alt="Recognition" />
          </div>
