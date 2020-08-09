@@ -32,26 +32,31 @@ const particlesOptions =
 function App() {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [boundingBox, setBoundingBox] = useState([]);
+  const [loading, setLoading]  = useState(false); 
 
   const onChangeHandler = (event) => {
     setInput(event.target.value);
   }
 
   const onButtonSubmit = () => {
+    setLoading(true);
     setImageUrl(input);
 
     const Clarifai = require('clarifai');
       
     // Instantiate a new Clarifai app by passing in your API key.
     const app = new Clarifai.App({apiKey: 'f7a07536db1144a2976fffdbe7ca41cd'});
-    
     // Predict the contents of an image by passing in a URL.
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
       .then(response => {
         console.log(response.outputs[0].data.regions);
+        setBoundingBox(response.outputs[0].data.regions);
+        setLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
       });
   }
 
@@ -61,7 +66,7 @@ function App() {
       <Navigation />
       <Rank />
       <ImageLinkForm onInputChagne={(e) => onChangeHandler(e)} input={input} onSubmit={onButtonSubmit} />
-      {imageUrl.length > 1 ?  <FaceRecognition imageUrl={imageUrl} /> : null}
+      {imageUrl.length && loading === false > 1 ?  <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null}
     </div>
   );
 }
