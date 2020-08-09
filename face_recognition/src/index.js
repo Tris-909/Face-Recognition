@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// Tachyons : CSS packages that I install to deal with CSS
+import 'tachyons';
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
