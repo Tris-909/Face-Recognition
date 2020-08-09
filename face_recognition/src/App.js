@@ -6,6 +6,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
+import SpinnerLoading from './components/Spinner/Spinner';
 
 import './App.css';
 import Particles from 'react-particles-js';
@@ -67,11 +68,13 @@ function App() {
     setRoute(route)
   }
 
+
+
   const MainContent = (
       <Fragment>
         <Rank />
         <ImageLinkForm onInputChagne={(e) => onChangeHandler(e)} input={input} onSubmit={onButtonSubmit} />
-        {imageUrl.length > 1 && loading === false   ?  <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null}
+        { loading === true ?  <SpinnerLoading /> : ( imageUrl.length > 0 ? <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null ) } 
       </Fragment>
   );
 
