@@ -38,6 +38,13 @@ function App() {
   const [boundingBox, setBoundingBox] = useState([]);
   const [loading, setLoading]  = useState(false); 
   const [route, setRoute] = useState('signin');
+  const [user, setUser] = useState({
+    id: '',
+    namme: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  });
 
   const onChangeHandler = (event) => {
     setInput(event.target.value);
@@ -67,7 +74,15 @@ function App() {
     setRoute(route)
   }
 
-
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    });
+  }
 
   const MainContent = (
       <Fragment>
@@ -83,7 +98,7 @@ function App() {
       <Navigation onRouteChange={onRouteChange} route={route} />
       { route === 'home' ? MainContent : null}
       { route === 'signin' ? <SignIn onRouteChange={onRouteChange} /> : null }
-      { route === 'register' ? <Register onRouteChange={onRouteChange} /> : null }
+      { route === 'register' ? <Register onRouteChange={onRouteChange} loadUser={loadUser} /> : null }
     </div>
   );
 }
