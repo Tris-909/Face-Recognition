@@ -1,13 +1,13 @@
 import React from 'react'
 
-export default function Rank() {
+export default function Rank({ name, entries }) {
     return (
         <div>
             <div className="white f3">
-                {' This is just a static Rank '}
+                {`Hi ${name}, Welcome to Face Recognition `}
             </div>
             <div className="white f1">
-                {' Rank 1'}
+                {` You have searched for ${entries} times. `}
             </div>
         </div>
     )

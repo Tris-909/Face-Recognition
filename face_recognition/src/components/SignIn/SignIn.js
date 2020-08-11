@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 
-export default function SignIn({onRouteChange}) {
+export default function SignIn({onRouteChange, loadUser}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
   
@@ -21,9 +21,9 @@ export default function SignIn({onRouteChange}) {
         password: password
       })
       .then(res => {
-        if (res.data === 'success') {
-          onRouteChange('home');
-        }
+        console.log(res);
+        loadUser(res.data);
+        onRouteChange('home');
       })
       .catch(err => console.log(err));
 

@@ -1,4 +1,5 @@
 import React, {useState ,Fragment} from 'react';
+import axios from 'axios';
 
 import Navigation from './components/Navigation/Navigation';
 import Rank from './components/Rank/Rank';
@@ -50,6 +51,16 @@ function App() {
     setInput(event.target.value);
   }
 
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    });
+  }
+
   const onButtonSubmit = () => {
     setLoading(true);
     setImageUrl(input);
@@ -61,6 +72,22 @@ function App() {
     // Predict the contents of an image by passing in a URL.
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
       .then(response => {
+        axios.put('http://localhost:3001/image', {
+          id: user.id
+        }).then(res => {
+          console.log(res);
+            axios.get('http://localhost:3001/')
+            .then((res) => {
+              console.log(res);
+              loadUser(res.data[0]);
+              console.log('update entries successfully'); 
+            })
+            .catch((err) => {
+              console.log(err)
+            });
+        }).catch(err => {
+          console.log(err);
+        });
         setBoundingBox(response.outputs[0].data.regions);
         setLoading(false);
       })
@@ -74,19 +101,9 @@ function App() {
     setRoute(route)
   }
 
-  const loadUser = (data) => {
-    setUser({
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    });
-  }
-
   const MainContent = (
       <Fragment>
-        <Rank />
+        <Rank name={user.name} entries={user.entries} />
         <ImageLinkForm onInputChagne={(e) => onChangeHandler(e)} input={input} onSubmit={onButtonSubmit} />
         { loading === true ?  <SpinnerLoading /> : ( imageUrl.length > 0 ? <FaceRecognition imageUrl={imageUrl} boundingBox={boundingBox} /> : null ) } 
       </Fragment>
@@ -96,8 +113,8 @@ function App() {
     <div className="App">
       <Particles className="particles" params={particlesOptions} />
       <Navigation onRouteChange={onRouteChange} route={route} />
-      { route === 'home' ? MainContent : null}
-      { route === 'signin' ? <SignIn onRouteChange={onRouteChange} /> : null }
+      { user.name ? MainContent : null}
+      { route === 'signin' ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} /> : null }
       { route === 'register' ? <Register onRouteChange={onRouteChange} loadUser={loadUser} /> : null }
     </div>
   );
