@@ -1,8 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
+
 app.use(express.json());
+app.use(cors());
 
 const database = {
     user: [
@@ -91,6 +94,6 @@ app.put('/image', (req, res) => {
 //     // res = false
 // });
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log('worked');
 });

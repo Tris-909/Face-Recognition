@@ -1,4 +1,4 @@
-import React, {useState, Fragment} from 'react';
+import React, {useState ,Fragment} from 'react';
 
 import Navigation from './components/Navigation/Navigation';
 import Rank from './components/Rank/Rank';
@@ -37,8 +37,7 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [boundingBox, setBoundingBox] = useState([]);
   const [loading, setLoading]  = useState(false); 
-  const [route, setRoute] = useState('home');
-
+  const [route, setRoute] = useState('signin');
 
   const onChangeHandler = (event) => {
     setInput(event.target.value);

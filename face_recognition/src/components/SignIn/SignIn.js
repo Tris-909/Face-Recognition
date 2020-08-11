@@ -1,6 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios';
 
 export default function SignIn({onRouteChange}) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+  
+    const EmailChangeHandler = (event) => {
+      setEmail(event.target.value);
+    }
+
+    const PasswordChangeHandler = (event) => {
+      setPassword(event.target.value);
+    }
+
+    const onSubmitHandler = (event) => {
+      event.preventDefault();  
+      
+      axios.post('http://localhost:3001/signin', {
+        email: email, 
+        password: password
+      })
+      .then(res => {
+        if (res.data === 'success') {
+          onRouteChange('home');
+        }
+      })
+      .catch(err => console.log(err));
+
+    }
+
     return ( 
     <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center" style={{backgroundColor: 'white'}}>
     <main className="pa4 black-80">
@@ -9,11 +37,23 @@ export default function SignIn({onRouteChange}) {
       <legend className="f1 fw6 ph0 black">Sign In</legend>
       <div className="mt3">
         <label className="db fw6 lh-copy f6 black">Email</label>
-        <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" />
+        <input 
+          className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+          type="email" 
+          name="email" 
+          id="email-address" 
+          onChange = {(event) => EmailChangeHandler(event)}
+          value={email} />
       </div>
       <div className="mv3">
         <label className="db fw6 lh-copy f6 black">Password</label>
-        <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" />
+        <input 
+          className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+          type="password" 
+          name="password"  
+          id="password" 
+          onChange = {(event) => PasswordChangeHandler(event)}
+          value={password} />
       </div>
     </fieldset>
     <div className="">
@@ -21,7 +61,7 @@ export default function SignIn({onRouteChange}) {
         className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
         type="submit" 
         value="Sign in" 
-        onClick={() => onRouteChange('home')} />
+        onClick={(event) => onSubmitHandler(event, email, password)} />
     </div>
     <div className="lh-copy mt3">
       <p onClick={() => onRouteChange('register')} className="f6 link dim black db">Register Here !</p>
