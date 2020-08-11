@@ -37,7 +37,7 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [boundingBox, setBoundingBox] = useState([]);
   const [loading, setLoading]  = useState(false); 
-  const [route, setRoute] = useState('signin');
+  const [route, setRoute] = useState('home');
 
 
   const onChangeHandler = (event) => {
