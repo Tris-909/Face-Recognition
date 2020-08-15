@@ -27,7 +27,7 @@ export default function Register({onRouteChange, loadUser}) {
     })
     .then((res) => {
       console.log(res);
-      loadUser(res.data.user[res.data.user.length-1]); 
+      loadUser(res.data[res.data.length-1]); 
       onRouteChange('home');
     })
     .catch(err => {

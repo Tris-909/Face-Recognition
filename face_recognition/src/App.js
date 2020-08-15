@@ -40,7 +40,7 @@ function App() {
   const [loading, setLoading]  = useState(false); 
   const [route, setRoute] = useState('signin');
   const [user, setUser] = useState({
-    id: '',
+    id: -1,
     namme: '',
     email: '',
     entries: 0,
@@ -76,13 +76,11 @@ function App() {
           id: user.id
         }).then(res => {
           console.log(res);
-            axios.get('http://localhost:3001/')
-            .then((res) => {
-              console.log(res);
+            axios.get('http://localhost:3001/', {
+              id: user.id
+            }).then((res) => {
               loadUser(res.data[0]);
-              console.log('update entries successfully'); 
-            })
-            .catch((err) => {
+            }).catch((err) => {
               console.log(err)
             });
         }).catch(err => {

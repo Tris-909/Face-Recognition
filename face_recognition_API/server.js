@@ -2,84 +2,79 @@ const express = require('express');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 
+var db = require('knex')({
+    client: 'pg',
+    connection: {
+      host : '127.0.0.1',
+      user : 'postgres',
+      password : 'Minhtri1',
+      database : 'face_recognition'
+    }
+});
+
+
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const database = {
-    user: [
-        {
-            id: '123',
-            name: 'john',
-            email: 'john@email.com',
-            password: 'Minhtri1',
-            entries: 0,
-            joined: new Date()
-        },
-        {
-            id: '124',
-            name: 'jenny',
-            email: 'jenny@email.com',
-            password: 'LOL',
-            entries: 0,
-            joined: new Date()
-        }
-    ]
-}
-
 app.get('/', (req, res) => {
-    res.send(database.user);
+    console.log(req.body);
 })
 
 app.post('/signin', (req, res) => {
-    if (req.body.email === database.user[0].email && req.body.password === database.user[0].password) {
-        res.json(database.user[0]);
-    } else {
-        res.status(400).json('log in failed')
-    }
+    db.select('email', 'hash').where('email', '=', req.body.email).from('login').then(data => {
+        const valid = bcrypt.compareSync(req.body.password, data[0].hash);
+        if (valid) {
+            db.select("*").from('users').where('email', '=', req.body.email).then(user => {
+                res.json(user[0]);
+            }).catch(() => res.status(400).json('Unable to get user'));
+        } else {
+            res.status(400).json('Wrong credentials');
+        }
+    }).catch(() => res.status(400).json('Wrong Credentials'));
 })
 
 app.post('/register', (req, res) => {
-    bcrypt.hash(req.body.password, null, null, function(err, hash) {
-        console.log(hash);
-    });
-    database.user.push({
-        email: req.body.email,
-        password: req.body.password,
-        name: req.body.name,
-        id: Math.random(),
-        entries: 0,
-        joined: new Date() 
-    });
-    res.json(database);
+    const {email, name, password} = req.body;
+    const hash = bcrypt.hashSync(password);
+    db.transaction(trx => {
+        trx.insert({
+            hash: hash,
+            email: email,
+        }).into('login').returning('email').then((loginemail) => {
+            return trx('users').returning("*").insert({
+                name: name, 
+                email: loginemail[0], 
+                joined: new Date()
+            })
+            .then(data => res.json(data[0]));
+        }).then(trx.commit).catch(trx.rollback);
+    }).catch(() => res.status(400).json('Unable to register a new user'));
+
+
 })
 
 app.get('/profile/:id', (req, res) => {
     const  { id } = req.params;
-    for (let i = 0; i < database.user.length; i++) {
-        if ( id === database.user[i].id) {
-            res.json(database.user[i]);
-            break;
-        } else if ( i === database.user.length-1 && id !== database.user[i].id) {
-            res.json('No user found');
-            break;
+    db.select('*').from('users').where({ id: id }).then(user => {
+        if (user.length) {
+            res.status(200).json(user[0]);
+        } else {
+            res.status(400).json('User not found');
         }
-    }
+    }).catch(() => res.status(400).json('Request Fail'));
 })
 
 app.put('/image', (req, res) => {
     const  { id } = req.body;
-    for (let i = 0; i < database.user.length; i++) {
-        if ( id === database.user[i].id) {
-            database.user[i].entries++;
-            res.json(database.user[i]);
-            break;
-        } else if ( i === database.user.length-1 && id !== database.user[i].id) {
-            res.json('No user found');
-            break;
-        }
-    }
+    db('users').where('id', '=', id).increment('entries', 1).returning('entries')
+    .then((entries) => {
+        console.log(entries);
+        res.status(200).json(entries[0]);
+    })
+    .catch((err) => res.status(400).json(err));
 })
 
 // bcrypt.hash("bacon", null, null, function(err, hash) {
