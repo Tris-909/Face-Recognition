@@ -99,6 +99,19 @@ function App() {
     setRoute(route)
   }
 
+  const SignOut = () => {
+    setUser({
+      id: -1,
+      name: '',
+      email: '',
+      entries: '',
+      joined: ''
+    });
+    setInput('');
+    setImageUrl('');
+    setBoundingBox([]);
+  }
+
   const MainContent = (
       <Fragment>
         <Rank name={user.name} entries={user.entries} />
@@ -110,7 +123,7 @@ function App() {
   return (
     <div className="App">
       <Particles className="particles" params={particlesOptions} />
-      <Navigation onRouteChange={onRouteChange} route={route} />
+      <Navigation onRouteChange={onRouteChange} route={route} SignOut={SignOut} />
       { user.name ? MainContent : null}
       { route === 'signin' ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} /> : null }
       { route === 'register' ? <Register onRouteChange={onRouteChange} loadUser={loadUser} /> : null }
