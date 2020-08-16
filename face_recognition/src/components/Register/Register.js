@@ -5,7 +5,8 @@ export default function Register({onRouteChange, loadUser}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [error, setError] = useState('');
+
   const onNameChangeInput = (event) => {
     setName(event.target.value);
   }
@@ -20,20 +21,29 @@ export default function Register({onRouteChange, loadUser}) {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    axios.post('http://localhost:3001/register', {
+    if (!name || !email || !password) {
+      setError('Invalid Form Submission');
+      return '';
+    }
+    // https://git.heroku.com/lit-earth-99267.git
+    // http://localhost:3001/register
+    axios.post('https://lit-earth-99267.herokuapp.com/register', {
       email: email,
       password: password,
       name: name
     })
     .then((res) => {
       console.log(res);
-      loadUser(res.data[res.data.length-1]); 
+      loadUser(res.data); 
       onRouteChange('home');
     })
     .catch(err => {
+      setError('Something is wrong');
       console.log(err);
     })
   }
+
+  const Error = error ? (<p style={{color: 'red', marginTop: '0px'}}>{error}</p>) : null;
 
   return ( 
     <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center" style={{backgroundColor: 'white'}}>
@@ -72,7 +82,8 @@ export default function Register({onRouteChange, loadUser}) {
           id="password" />
       </div>
     </fieldset>
-    <div className="">
+    <div>
+      {Error}
       <input 
         className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
         type="submit" 

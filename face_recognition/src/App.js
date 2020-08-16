@@ -52,6 +52,7 @@ function App() {
   }
 
   const loadUser = (data) => {
+    console.log(data);
     setUser({
       id: data.id,
       name: data.name,
@@ -72,14 +73,16 @@ function App() {
     // Predict the contents of an image by passing in a URL.
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
       .then(response => {
-        axios.put('http://localhost:3001/image', {
+        axios.put('https://lit-earth-99267.herokuapp.com/image', {
           id: user.id
         }).then(res => {
-          console.log(res);
-            axios.get('http://localhost:3001/', {
-              id: user.id
+          console.log(user.id);
+            axios.get('https://lit-earth-99267.herokuapp.com/', {
+              params: {
+                id: user.id
+              }
             }).then((res) => {
-              loadUser(res.data[0]);
+              loadUser(res.data);
             }).catch((err) => {
               console.log(err)
             });

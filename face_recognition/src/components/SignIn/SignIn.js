@@ -4,7 +4,8 @@ import axios from 'axios';
 export default function SignIn({onRouteChange, loadUser}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-  
+    const [error, setError] = useState('');
+
     const EmailChangeHandler = (event) => {
       setEmail(event.target.value);
     }
@@ -16,7 +17,7 @@ export default function SignIn({onRouteChange, loadUser}) {
     const onSubmitHandler = (event) => {
       event.preventDefault();  
       
-      axios.post('http://localhost:3001/signin', {
+      axios.post('https://lit-earth-99267.herokuapp.com/signin', {
         email: email, 
         password: password
       })
@@ -25,9 +26,13 @@ export default function SignIn({onRouteChange, loadUser}) {
         loadUser(res.data);
         onRouteChange('home');
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        setError('Wrong Credentials or Bad Request');
+      });
 
     }
+
+    const Error = error ? (<p style={{color: 'red', marginTop: '0px'}}>{error}</p>) : null;
 
     return ( 
     <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center" style={{backgroundColor: 'white'}}>
@@ -57,6 +62,7 @@ export default function SignIn({onRouteChange, loadUser}) {
       </div>
     </fieldset>
     <div className="">
+      {Error}
       <input 
         className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
         type="submit" 

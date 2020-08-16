@@ -5,10 +5,10 @@ const cors = require('cors');
 var db = require('knex')({
     client: 'pg',
     connection: {
-      host : '127.0.0.1',
-      user : 'postgres',
-      password : 'Minhtri1',
-      database : 'face_recognition'
+     connectionString : process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
     }
 });
 
@@ -20,7 +20,13 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-    console.log(req.body);
+    // const currentID = parseInt(req.query.id);
+    // db.select("*").from('users').where({id: currentID}).then((response) => {
+    //     res.send(response[0]);
+    // }).catch((err) => {
+    //     console.log(err);
+    // });
+    res.send('worked');
 })
 
 app.post('/signin', (req, res) => {
@@ -38,6 +44,9 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
     const {email, name, password} = req.body;
+    if (!email || !name || !password) {
+        return res.status(400).json('incorect form submission');
+    }
     const hash = bcrypt.hashSync(password);
     db.transaction(trx => {
         trx.insert({
@@ -71,24 +80,11 @@ app.put('/image', (req, res) => {
     const  { id } = req.body;
     db('users').where('id', '=', id).increment('entries', 1).returning('entries')
     .then((entries) => {
-        console.log(entries);
         res.status(200).json(entries[0]);
     })
     .catch((err) => res.status(400).json(err));
-})
+});
 
-// bcrypt.hash("bacon", null, null, function(err, hash) {
-//     // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare("bacon", hash, function(err, res) {
-//     // res == true
-// });
-// bcrypt.compare("veggies", hash, function(err, res) {
-//     // res = false
-// });
-
-app.listen(3001, () => {
-    console.log('worked');
+app.listen(process.env.PORT || 3001, () => {
+    console.log(`worked on ${process.env.PORT}`);
 });
