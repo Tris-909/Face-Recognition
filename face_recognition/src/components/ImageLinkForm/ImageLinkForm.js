@@ -19,7 +19,7 @@ const ContainerWidth = styled.div`
     display: flex;
     justify-content: center;
 
-    @media screen and (max-width: 500px) {
+    @media screen and (max-width: 600px) {
         width: 90%;
         display: initial;
     }
@@ -27,7 +27,8 @@ const ContainerWidth = styled.div`
 
 const Button = styled.button`
     width: 30%;
-    @media screen and (max-width: 500px) {
+    margin-left: 20px;
+    @media screen and (max-width: 600px) {
         margin: 2rem;
         width: 30%;
         display: initial;
@@ -37,15 +38,12 @@ const Button = styled.button`
 export default function ImageLinkForm(props) {
     return (
         <div>
-            <p className="f3 white">
-                {`Face Recognition will detect faces in your picture, please give it a try`}
-            </p>
             <div className="center">
                 <ContainerWidth>
                     <Input 
                         placeholder="Add your Image URL here" 
                         type="text" 
-                        onChange={props.onInputChagne} 
+                        onChange={props.onInputChange} 
                         value={props.input} 
                         className="center"/>
                     <Button className="grow f4 link ph3 dib white bg-black b--white" onClick={props.onSubmit}> Detect </Button>

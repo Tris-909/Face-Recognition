@@ -1,14 +1,21 @@
 import React from 'react'
+import styled from 'styled-components';
 
-export default function Rank({ name, entries }) {
+const Title = styled.div`
+    font-size: 2.5rem;
+    color: #fff;
+`;
+
+
+export default function Rank() {
     return (
         <div>
-            <div className="white f3">
-                {`Hi ${name}, Welcome to Face Recognition `}
-            </div>
-            <div className="white f1">
-                {` You have searched for ${entries} times. `}
-            </div>
+            <Title>
+                {`Hi, Welcome to Face Recognition `}
+            </Title>
+            <p className="f3 white">
+                {`Face Recognition will detect faces in your picture, please give it a try`}
+            </p>
         </div>
-    )
+    );
 }

@@ -20,13 +20,13 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-    // const currentID = parseInt(req.query.id);
-    // db.select("*").from('users').where({id: currentID}).then((response) => {
-    //     res.send(response[0]);
-    // }).catch((err) => {
-    //     console.log(err);
-    // });
-    res.send('worked');
+    const currentID = parseInt(req.query.id);
+    db.select("*").from('users').where({id: currentID}).then((response) => {
+        console.log(res);
+        res.send(response[0]);
+    }).catch((err) => {
+        console.log(err);
+    });
 })
 
 app.post('/signin', (req, res) => {
