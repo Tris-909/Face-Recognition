@@ -1,6 +1,8 @@
 # Face-Recognition
 ZeroToMastery Project about Face Recognition using FaceRecognition API From Clarifai. This web-application allow user to sign up, log in, do face_recognition from picture user post. 
 
+link to the project : https://face-recognition-tris909.herokuapp.com/
+
 # What's the STACKS of the project ? 
 * Front-End : React 
 * Server-Side : NodeJS 
